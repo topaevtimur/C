@@ -59,7 +59,7 @@ char *readString(void) {
 int correctName(char* s) {
     int j = 0;
     while(j < strlen(s)){
-        if (!isalpha(s[j]))
+        if (!isalpha(s[j++]))
             return 0;
     }
     return 1;
@@ -152,21 +152,17 @@ void create(char *name, char *phone) {
 }
 
 void read(void) {
-    if (feof(mf) == true) {
-        return;
-    }
-
-    while (!feof(mf)) {
-        int index;
+    while (feof(mf)){
+        /*char ch = fgetc(mf);
+        if(ch == EOF) return;*/
+        int index = NULL;
         fscanf(mf, "%d", &index);
 
         while (index >= bookSize)
             person = realloc(person, bookSize *= 2);
         person[index].name = readingFile();
         person[index].phone = readingFile();
-        printf("%s", person[index].name);
     }
-
 }
 
 void write(void) {
@@ -180,18 +176,22 @@ void write(void) {
 
 int main(int argc, char *argv[]) {
 
+    bookSize = 10;
+    person = (struct book*)malloc(sizeof(struct book) * bookSize);
+
     char* file = argv[1];
     mf = fopen(file, "r+");
     if (mf == NULL) {
         mf = fopen(file, "w+");
-    }
-    bookSize = 10;
-    struct book *person = malloc(sizeof(struct book) * bookSize);
-
-    //read from file
-    read();
-
-    while(true) {
+    }else
+        read();
+    /*while (!feof(mf)) {
+        int index = NULL;
+        //fscanf(mf, "%d", &index);
+        char ch = fgetc(mf);
+        printf("%c", ch);
+    }*/
+    while(1) {
         char *command = readString();
         if (strcmp(command, "find") == 0) {
             char *string1 = readString();
@@ -240,9 +240,8 @@ int main(int argc, char *argv[]) {
             }
             create(name, phone);
         }
-
         fclose(mf);
-        mf = fopen(argv[1], "w+");
+        mf = fopen(file, "w+");
         write();
 
         if (strcmp(command, "exit") == 0) {
