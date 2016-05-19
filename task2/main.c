@@ -18,9 +18,8 @@ size_t bookSize;
 int used[10000000];
 
 char *readingFile() {
-    char *str = NULL;
     size_t size = 32;
-    str = (char *) malloc(size);
+    char *str = (char *) malloc(sizeof(char) * size);
     int n = 0;
     while (!feof(mf)) {
         char s = fgetc(mf);
@@ -32,7 +31,6 @@ char *readingFile() {
             str = (char *) realloc(str, size *= 2);
         }
         str[n++] = s;
-        n++;
 
     }
     str[n] = '\0';
@@ -40,21 +38,19 @@ char *readingFile() {
 }
 
 char *readString() {
-    char *str = NULL;
     size_t size = 32;
-    str = (char *) malloc(size);
+    char *str = (char *) malloc(sizeof(char) * size);
     int n = 0;
     for (; ;) {
         char s = getchar();
         if (s == '\n' || s == ' ') {
-            str[n++] = '\0';
+            str[n] = '\0';
             return str;
         }
         if (size == n + 1) {
-            str = (char *) realloc(str, size *= 2);
+            str = (char* )realloc(str,(size *= 2));
         }
         str[n++] = s;
-        n++;
 
     }
 }
@@ -67,14 +63,14 @@ int correctName(char *s) {
 }
 
 int correctPhone(char *s) {
-    int b, bb;
+    int b = 0, bb = 0;
     for (int i = 0; i < strlen(s); ++i) {
         if (s[i] == '(')
             ++b;
         if (s[i] == ')')
             bb++;
         if (b - bb < 0 || (i != 0 && s[i] == '+') || b > 1 || (s[i] == '-' && s[i + 1] == '-') ||
-            (isdigit(s[i]) && s[i] != '-' && s[i] != '+' && s[i] != '(' && s[i] != ')'))
+            (!isdigit(s[i]) && s[i] != '-' && s[i] != '+' && s[i] != '(' && s[i] != ')'))
             return 0;
     }
     return 1;
@@ -149,7 +145,7 @@ void read() {
         int index;
         fscanf(mf, "%d", &index);
         while (index >= bookSize)
-            person = (book *) realloc(person, bookSize *= 2);
+            person = (book* ) realloc(person, bookSize *= 2);
         person[index].name = readingFile();
         person[index].phone = readingFile();
 
@@ -176,6 +172,7 @@ int main(int argc, char *argv[]) {
     struct book *person = (book* )malloc(sizeof(struct book) * bookSize);
 
     //read from file
+    read();
 
     for (; ;) {
         char *command = readString();
