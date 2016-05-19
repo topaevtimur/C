@@ -123,7 +123,7 @@ void findPhone(char *phone) {
         if (used[i] == 0){
             i++;
             continue;
-            
+
         }
         /*int l = 0, r = 0;
         int k = 0;
@@ -147,7 +147,7 @@ void findPhone(char *phone) {
             return;
         }*/
         phone = clearPhone(phone);
-        char cur = clearPhone(person[i].phone);
+        char *cur = clearPhone(person[i].phone);
         if(strcmp(cur, phone) == 0)
             printf("%d %s %s\n", i, person[i].name, person[i].phone);
         i++;
