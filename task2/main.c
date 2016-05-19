@@ -17,10 +17,11 @@ struct book* person;
 size_t bookSize;
 int used[10000000];
 
-char *readingFile() {
+char *readingFile(void) {
     size_t size = 32;
     char *str = (char *) malloc(sizeof(char) * size);
     int n = 0;
+
     while (!feof(mf)) {
         char s = fgetc(mf);
         if (s == '\n' || s == ' ' || s == EOF) {
@@ -28,7 +29,7 @@ char *readingFile() {
             return str;
         }
         if (size == n + 1) {
-            str = (char *) realloc(str, size *= 2);
+            str = realloc(str,sizeof(char) * (size *= 2));
         }
         str[n++] = s;
 
@@ -37,7 +38,7 @@ char *readingFile() {
     return str;
 }
 
-char *readString() {
+char *readString(void) {
     size_t size = 32;
     char *str = (char *) malloc(sizeof(char) * size);
     int n = 0;
@@ -48,7 +49,7 @@ char *readString() {
             return str;
         }
         if (size == n + 1) {
-            str = (char* )realloc(str,(size *= 2));
+            str = realloc(str,sizeof(char) * (size *= 2));
         }
         str[n++] = s;
 
@@ -150,7 +151,7 @@ void create(char *name, char *phone) {
     used[cur] = 1;
 }
 
-void read() {
+void read(void) {
     if (feof(mf) == true) {
         return;
     }
@@ -158,15 +159,17 @@ void read() {
     while (!feof(mf)) {
         int index;
         fscanf(mf, "%d", &index);
+
         while (index >= bookSize)
             person = realloc(person, bookSize *= 2);
         person[index].name = readingFile();
         person[index].phone = readingFile();
+        printf("%s", person[index].name);
     }
 
 }
 
-void write() {
+void write(void) {
     int i = 0;
     while(i < bookSize) {
         if (used[i] == 1)
@@ -190,7 +193,6 @@ int main(int argc, char *argv[]) {
 
     while(true) {
         char *command = readString();
-
         if (strcmp(command, "find") == 0) {
             char *string1 = readString();
             if (isalpha(string1[0])) {
@@ -244,6 +246,7 @@ int main(int argc, char *argv[]) {
         write();
 
         if (strcmp(command, "exit") == 0) {
+            free(person);
             fclose(mf);
             return 0;
         }
