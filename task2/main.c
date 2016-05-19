@@ -135,7 +135,7 @@ void create(char *name, char *phone) {
         }
     }
     int cur = bookSize;
-    person = (struct book* ) realloc(person, bookSize *= 2);
+    person = (book* ) realloc(person, bookSize *= 2);
     person[cur].name = name;
     person[cur].phone = phone;
     used[cur] = 1;
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
         mf = fopen(argv[1], "w+");
     }
     bookSize = 10;
-    struct book *person = (struct book* )malloc(sizeof(struct book) * bookSize);
+    struct book *person = (book* )malloc(sizeof(struct book) * bookSize);
 
     //read from file
 
