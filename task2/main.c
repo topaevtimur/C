@@ -55,16 +55,19 @@ char *readString() {
     }
 }
 
-int correctName(char *s) {
-    for(int j = 0; j < strlen(s); ++j)
+int correctName(char* s) {
+    int j = 0;
+    while(j < strlen(s)){
         if (!isalpha(s[j]))
             return 0;
+    }
     return 1;
 }
 
 int correctPhone(char *s) {
     int b = 0, bb = 0;
-    for (int i = 0; i < strlen(s); ++i) {
+    int i = 0;
+    while(i < strlen(s)) {
         if (s[i] == '(')
             ++b;
         if (s[i] == ')')
@@ -72,30 +75,37 @@ int correctPhone(char *s) {
         if (b - bb < 0 || (i != 0 && s[i] == '+') || b > 1 || (s[i] == '-' && s[i + 1] == '-') ||
             (!isdigit(s[i]) && s[i] != '-' && s[i] != '+' && s[i] != '(' && s[i] != ')'))
             return 0;
+        i++;
     }
     return 1;
 }
 char* toLow(char* name){
-    for(int i = 0; i < strlen(name); i++)
+    int i = 0;
+    while(i < strlen(name)){
         name[i] = tolower(name[i]);
+        i++;
+    }
     return name;
 
 }
 void findName(char *name) {
     name = toLow(name);
-    for (int i = 0; i < bookSize; i++) {
+    int i = 0;
+    while(i < bookSize) {
         if (used[i] == 0)continue;
         char *curName = person[i].name;
         curName = toLow(curName);
         if (strstr(curName, name) != NULL) {
             printf("%d %s %s \n", i, person[i].name, person[i].phone);
         }
+        i++;
     }
 
 }
 
 void findPhone(char *phone) {
-    for (int i = 0; i < bookSize; i++) {
+    int i = 0;
+    while(i < bookSize) {
         if (used[i] == 0)continue;
         int l = 0, r = 0;
         int k = 0;
@@ -118,20 +128,23 @@ void findPhone(char *phone) {
             printf("%d %s %s\n", i, person[i].name, person[i].phone);
             return;
         }
+        i++;
     }
 }
 
 void create(char *name, char *phone) {
-    for (int i = 0; i < bookSize; i++) {
+    int i = 0;
+    while(i < bookSize) {
         if (used[i] == 0) {
             person[i].name = name;
             person[i].phone = phone;
             used[i] = 1;
             return;
         }
+        i++;
     }
     int cur = bookSize;
-    person = (book* ) realloc(person, bookSize *= 2);
+    person =  realloc(person, bookSize *= 2);
     person[cur].name = name;
     person[cur].phone = phone;
     used[cur] = 1;
@@ -141,40 +154,41 @@ void read() {
     if (feof(mf) == true) {
         return;
     }
+
     while (!feof(mf)) {
         int index;
         fscanf(mf, "%d", &index);
         while (index >= bookSize)
-            person = (book* ) realloc(person, bookSize *= 2);
+            person = realloc(person, bookSize *= 2);
         person[index].name = readingFile();
         person[index].phone = readingFile();
-
     }
 
 }
 
 void write() {
-    for (int i = 0; i < bookSize; i++) {
+    int i = 0;
+    while(i < bookSize) {
         if (used[i] == 1)
             fprintf(mf, "%d %s %s\n", i, person[i].name, person[i].phone);
-
+        i++;
     }
 }
 
 int main(int argc, char *argv[]) {
 
-
-    mf = fopen(argv[1], "r+");
+    char* file = argv[1];
+    mf = fopen(file, "r+");
     if (mf == NULL) {
-        mf = fopen(argv[1], "w+");
+        mf = fopen(file, "w+");
     }
     bookSize = 10;
-    struct book *person = (book* )malloc(sizeof(struct book) * bookSize);
+    struct book *person = malloc(sizeof(struct book) * bookSize);
 
     //read from file
     read();
 
-    for (; ;) {
+    while(true) {
         char *command = readString();
 
         if (strcmp(command, "find") == 0) {
