@@ -80,6 +80,16 @@ int correctPhone(char *s) {
     }
     return 1;
 }
+char* clearPhone(char* phone){
+    int i = 0,l= 0 ;
+    char* ans = (char*)malloc(sizeof(char) * strlen(phone));
+    while(i < strlen(phone)){
+        if(isdigit(phone[i]))ans[l++] = phone[i];
+        i++;
+    }
+    return ans;
+
+}
 char* toLow(char* name){
     int i = 0;
     while(i < strlen(name)){
@@ -93,7 +103,10 @@ void findName(char *name) {
     name = toLow(name);
     int i = 0;
     while(i < bookSize) {
-        if (used[i] == 0)continue;
+        if (used[i] == 0) {
+            i++;
+            continue;
+        }
         char *curName = person[i].name;
         curName = toLow(curName);
         if (strstr(curName, name) != NULL) {
@@ -107,8 +120,12 @@ void findName(char *name) {
 void findPhone(char *phone) {
     int i = 0;
     while(i < bookSize) {
-        if (used[i] == 0)continue;
-        int l = 0, r = 0;
+        if (used[i] == 0){
+            i++;
+            continue;
+            
+        }
+        /*int l = 0, r = 0;
         int k = 0;
         while (l < strlen(phone) || r < strlen(person[i].phone)) {
             if (l >= strlen(phone) && isdigit(person[i].phone[r]))break; else {
@@ -117,7 +134,7 @@ void findPhone(char *phone) {
             if (r >= strlen(person[i].phone) && isdigit(phone[l]))break; else {
                 l++;
             }
-            if (isdigit(phone[l]) & isdigit(person[i].phone[r])) {
+            if (isdigit(phone[l]) && isdigit(person[i].phone[r])) {
                 if (phone[l] != person[i].phone[r]) break;
                 l++;
                 r++;
@@ -128,7 +145,11 @@ void findPhone(char *phone) {
         if (l >= strlen(phone) && r >= strlen(person[i].phone)) {
             printf("%d %s %s\n", i, person[i].name, person[i].phone);
             return;
-        }
+        }*/
+        phone = clearPhone(phone);
+        char cur = clearPhone(person[i].phone);
+        if(strcmp(cur, phone) == 0)
+            printf("%d %s %s\n", i, person[i].name, person[i].phone);
         i++;
     }
 }
@@ -152,7 +173,8 @@ void create(char *name, char *phone) {
 }
 
 void read(void) {
-    while (feof(mf)){
+    if(fgetc(mf) == EOF)return;
+    while (!feof(mf)){
         /*char ch = fgetc(mf);
         if(ch == EOF) return;*/
         int index = NULL;
@@ -162,6 +184,7 @@ void read(void) {
             person = realloc(person, bookSize *= 2);
         person[index].name = readingFile();
         person[index].phone = readingFile();
+        used[index] = 1;
     }
 }
 
